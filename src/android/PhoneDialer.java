@@ -181,7 +181,7 @@ public class PhoneDialer extends CordovaPlugin {
 			this.callbackContext.success();
 		} 
 		catch (Exception e) {
-			this.callbackContext.error("CouldNotCallPhoneNumber");
+			this.callbackContext.error(e);
 		}
 	}
 	
