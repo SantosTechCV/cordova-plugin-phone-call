@@ -159,9 +159,11 @@ public class PhoneDialer extends CordovaPlugin {
 		
 		try {
 			Intent intent = new Intent(isTelephonyEnabled() ? Intent.ACTION_CALL : Intent.ACTION_VIEW);
-
-			myPhoneStateListener = new StatePhoneReceiver(this.cordova.getContext(), this.cordova);
-			manager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE); // start listening to the phone changes
+		    
+			if (myPhoneStateListener == null) {
+				myPhoneStateListener = new StatePhoneReceiver(this.cordova.getContext(), this.cordova);
+				manager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE); // start listening to the phone changes
+			}
 			String IsSpeakerOn = args.getString(2);
 			if (IsSpeakerOn.toLowerCase().equals("true")) {
 				callFromApp = true;
@@ -232,4 +234,13 @@ public class PhoneDialer extends CordovaPlugin {
 		}
 		return "";
 	}
+	    // Unregister the phone state listener when it's no longer needed
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myPhoneStateListener != null) {
+            manager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            myPhoneStateListener = null;
+        }
+    }
 }
